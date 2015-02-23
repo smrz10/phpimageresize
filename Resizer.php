@@ -60,7 +60,9 @@ class Resizer {
 
     private function fileNotExpired($filePath) {
         $cacheMinutes = $this->configuration->obtainCacheMinutes();
-        $this->fileSystem->filemtime($filePath) < strtotime('+'. $cacheMinutes. ' minutes');
+        $fileNotExpired = $this->fileSystem->filemtime($filePath) < strtotime('+'. $cacheMinutes. ' minutes');
+        
+        return $fileNotExpired;
     }
 
     private function checkPath($path) {
