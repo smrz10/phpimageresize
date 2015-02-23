@@ -7,8 +7,8 @@ class Configuration {
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
     const CACHE_MINUTES_KEY = 'cache_http_minutes';
-    const WIDTH_KEY = 'width';
-    const HEIGHT_KEY = 'height';
+    const WIDTH_KEY = 'w';
+    const HEIGHT_KEY = 'h';
 
     const CONVERT_PATH = 'convert';
 
@@ -28,8 +28,8 @@ class Configuration {
             self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
             'cache_http_minutes' => 20,
-            'width' => null,
-            'height' => null);
+            self::WIDTH_KEY => null,
+            self::HEIGHT_KEY => null);
 
         $this->opts = array_merge($defaults, $sanitized);
     }
