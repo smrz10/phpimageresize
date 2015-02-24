@@ -28,7 +28,7 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testObtainLocallyCachedFilePath() {
-        $configuration = new Configuration(array('width' => 800, 'height' => 600));
+        $configuration = new Configuration(array('w' => 800, 'h' => 600));
         $imagePath = new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler');
         $resizer = new Resizer($imagePath, $configuration);
 
@@ -47,7 +47,7 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testLocallyCachedFilePathFail() {
-        $configuration = new Configuration(array('width' => 800, 'height' => 600));
+        $configuration = new Configuration(array('w' => 800, 'h' => 600));
         $imagePath = new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler');
         $resizer = new Resizer($imagePath, $configuration);
 
