@@ -3,6 +3,7 @@
 include 'Configuration.php';
 
 class FunctionResizeTest extends PHPUnit_Framework_TestCase {
+    private $RequiredArguments = array('output-filename' => 'test', 'h' => 300, 'w' => 600);    
 
     private $defaults = array(
         'crop' => false,
@@ -21,14 +22,47 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
     public function testOpts()
     {
-        $this->assertInstanceOf('Configuration', new Configuration);
+        $this->assertInstanceOf('Configuration', new Configuration($this->RequiredArguments));
     }
 
-    public function testNullOptsDefaults() {
+    /**
+     * @expectedException InvalidArgumentException
+     */    
+    public function testNullOpts() {
         $configuration = new Configuration(null);
-
-        $this->assertEquals($this->defaults, $configuration->asHash());
-    }
+    }     
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */    
+    public function testEmptyOpts() {
+        $configuration = new Configuration();
+    }         
+     
+    public function testOneRequiredArguments() {
+        $onlyFilename = array('output-filename' => 'testFileName');
+        $configuration = new Configuration($onlyFilename);        
+        $asHash = $configuration->asHash();
+        $this->assertEquals($asHash['output-filename'],$onlyFilename['output-filename']);        
+        
+        $onlyWidth = array('w' => 7310);
+        $configuration = new Configuration($onlyWidth);        
+        $asHash = $configuration->asHash();
+        $this->assertEquals($asHash['w'],$onlyWidth['w']);                
+        
+        $onlyHeight = array('h' => 730);
+        $configuration = new Configuration($onlyHeight);        
+        $asHash = $configuration->asHash();
+        $this->assertEquals($asHash['h'],$onlyHeight['h']);                        
+    } 
+     
+    // No tiene sentido cuando es requerido enviar por lo menos un parametro
+    // minimo: output-filename, w, h 
+//    public function testNullOptsDefaults() {
+//        $configuration = new Configuration(null);
+//
+//        $this->assertEquals($this->defaults, $configuration->asHash());
+//    }
 
     public function testDefaults() {
         $configuration = new Configuration();
@@ -38,33 +72,37 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testDefaultsNotOverwriteConfiguration() {
-
         $opts = array(
             'thumbnail' => true,
             'maxOnly' => true
         );
+        
+        $opts = array_merge($opts, $this->RequiredArguments);
 
         $configuration = new Configuration($opts);
         $configured = $configuration->asHash();
 
         $this->assertTrue($configured['thumbnail']);
         $this->assertTrue($configured['maxOnly']);
+        $this->assertEquals($this->$RequiredArguments['h'],$configured['h']);
+        $this->assertEquals($this->$RequiredArguments['w'],$configured['w']);     
     }
 
     public function testObtainCache() {
-        $configuration = new Configuration();
+
+        $configuration = new Configuration($this->RequiredArguments);
 
         $this->assertEquals('./cache/', $configuration->obtainCache());
     }
 
     public function testObtainRemote() {
-        $configuration = new Configuration();
+        $configuration = new Configuration($this->RequiredArguments);
 
         $this->assertEquals('./cache/remote/', $configuration->obtainRemote());
     }
 
     public function testObtainConvertPath() {
-        $configuration = new Configuration();
+        $configuration = new Configuration($this->RequiredArguments);
 
         $this->assertEquals('convert', $configuration->obtainConvertPath());
     }
