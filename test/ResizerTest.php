@@ -7,24 +7,18 @@ date_default_timezone_set('Europe/Berlin');
 
 
 class ResizerTest extends PHPUnit_Framework_TestCase {
+    private $RequiredArguments = array('h' => 300, 'w' => 600); 
 
     /**
      * @expectedException InvalidArgumentException
      */
     public function testNecessaryCollaboration() {
-        $resizer = new Resizer('anyNonPathObject');
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testOptionalCollaboration() {
-        $resizer = new Resizer(new ImagePath(''), 'nonConfigurationObject');
+        $resizer = new Resizer('anyNonPathObject', 'nonConfigurationObject');
     }
 
     public function testInstantiation() {
-        $this->assertInstanceOf('Resizer', new Resizer(new ImagePath(''), new Configuration()));
-        $this->assertInstanceOf('Resizer', new Resizer(new ImagePath('')));
+        $this->assertInstanceOf('Resizer', new Resizer(new ImagePath(''), new Configuration($this->RequiredArguments)));
+        #$this->assertInstanceOf('Resizer', new Resizer(new ImagePath('')));
     }
 
     public function testObtainLocallyCachedFilePath() {
@@ -66,7 +60,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testCreateNewPath() {
-        $resizer = new Resizer(new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler'));
+        $configuration = new Configuration($this->RequiredArguments);    
+        $resizer = new Resizer(new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler'),$configuration );
     }
 
 }
