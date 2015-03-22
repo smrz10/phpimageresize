@@ -4,10 +4,6 @@ require 'ImagePath.php';
 require 'Configuration.php';
 require 'Resizer.php';
 
-function sanitize($path) {
-	return urldecode($path);
-}
-
 function isInCache($path, $imagePath) {
 	$isInCache = false;
 	if(file_exists($path) == true):
