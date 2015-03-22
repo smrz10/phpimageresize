@@ -56,19 +56,19 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($asHash['h'],$onlyHeight['h']);                        
     } 
      
-    // No tiene sentido cuando es requerido enviar por lo menos un parametro
-    // minimo: output-filename, w, h 
-//    public function testNullOptsDefaults() {
-//        $configuration = new Configuration(null);
-//
-//        $this->assertEquals($this->defaults, $configuration->asHash());
-//    }
+    /**
+     * @expectedException InvalidArgumentException
+     */    
+    public function testNullOptsArgument() {
+        $configuration = new Configuration(null);
+    }
 
-    public function testDefaults() {
-        $configuration = new Configuration();
+    public function testDefaultsMergeRequiredArguments() {
+        $configuration = new Configuration($this->RequiredArguments);
         $asHash = $configuration->asHash();
+        $DefaultsMergeRequiredArguments = array_merge($this->defaults,$this->RequiredArguments);
 
-        $this->assertEquals($this->defaults, $asHash);
+        $this->assertEquals($DefaultsMergeRequiredArguments, $asHash);
     }
 
     public function testDefaultsNotOverwriteConfiguration() {
@@ -84,8 +84,8 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
         $this->assertTrue($configured['thumbnail']);
         $this->assertTrue($configured['maxOnly']);
-        $this->assertEquals($this->$RequiredArguments['h'],$configured['h']);
-        $this->assertEquals($this->$RequiredArguments['w'],$configured['w']);     
+        $this->assertEquals($this->RequiredArguments['h'],$configured['h']);
+        $this->assertEquals($this->RequiredArguments['w'],$configured['w']);     
     }
 
     public function testObtainCache() {
