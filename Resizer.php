@@ -71,6 +71,23 @@ class Resizer {
 
     private function checkConfiguration($configuration) {
         if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
+    public function isNecessaryNewFile($newFile,$cacheFile) {	    
+	    $fileExists = $this->isInCache($newFile);
+	    if ($fileExists == True) {
+	        $isCacheMoreRecent = $this->isCacheMoreRecent($newFile,$cacheFile);		    
+	    }
+	    $isNecessaryNewFile = !($fileExists && $isCacheMoreRecent);
+
+	    return $isNecessaryNewFile;        
+    }
+    
+    private function isCacheMoreRecent($newFile,$cacheFile) {	        
+	    $cacheFileTime = date("YmdHis",$this->fileSystem->filemtime($cacheFile));
+	    $newFileTime = date("YmdHis",$this->fileSystem->filemtime($newFile));       
+	    $isCacheMoreRecent = $newFileTime > $cacheFileTime;
+	    
+	    return $isCacheMoreRecent;
+    }
     }
 
 }
