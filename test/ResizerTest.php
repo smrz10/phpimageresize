@@ -63,5 +63,60 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $configuration = new Configuration($this->RequiredArguments);    
         $resizer = new Resizer(new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler'),$configuration );
     }
+    
+    public function testCreateNewFileIsNotCache() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';
+        $pathCacheFile = './cache/remote/mf_NewFile.jpg';
+        $configuration = new Configuration($this->RequiredArguments);    
+        $imagePath = new ImagePath($pathNewFile);
+        $resizer = new Resizer($imagePath,$configuration );        
 
+        $stub = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stub->method('file_exists')
+            ->willReturn(false);
+        $resizer->injectFileSystem($stub);
+        
+        $this->assertTrue($resizer->isNecessaryNewFile($pathNewFile,$pathCacheFile));
+    }   
+    
+    public function testCreateNewFileCacheIsOld() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';
+        $pathCacheFile = './cache/remote/mf_NewFile.jpg';
+        $configuration = new Configuration($this->RequiredArguments);    
+        $imagePath = new ImagePath($pathNewFile);
+        $resizer = new Resizer($imagePath,$configuration );        
+
+        $stub = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stub->method('file_exists')
+            ->willReturn(True);            
+            
+        $stub->method('filemtime')
+            ->willReturn(21 * 60);      
+        $resizer->injectFileSystem($stub);
+        
+        $this->assertTrue($resizer->isNecessaryNewFile($pathNewFile,$pathCacheFile));
+    }    
+
+    public function testNotCreateNewFileCacheIsMoreRecent() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';
+        $pathCacheFile = './cache/remote/mf_NewFile.jpg';
+        $configuration = new Configuration($this->RequiredArguments);    
+        $imagePath = new ImagePath($pathNewFile);
+        $resizer = new Resizer($imagePath,$configuration );        
+        
+        $timeNewFile = 30;
+        $timeCacheFile = 28;
+
+        $stub = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stub->method('file_exists')
+            ->willReturn(True);                        
+        $stub->method('filemtime')
+            ->will($this->onConsecutiveCalls($timeNewFile,$timeCacheFile,$timeNewFile));
+        $resizer->injectFileSystem($stub);
+        
+        $this->assertFalse($resizer->isNecessaryNewFile($pathNewFile,$pathCacheFile));
+    }         
 }
