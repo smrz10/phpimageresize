@@ -22,6 +22,11 @@ class ImagePath {
         list($filename) = explode('?',$finfo['basename']);
         return $filename;
     }
+    
+    public function obtainFileExtension() {
+	    $fileInfo = pathinfo($this->$path);
+	    return $fileInfo['extension'];        
+    }
 
     private function sanitize($path) {
         return urldecode($path);
