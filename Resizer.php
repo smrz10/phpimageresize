@@ -72,6 +72,8 @@ class Resizer {
 
     private function checkConfiguration($configuration) {
         if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
+    }    
+        
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
 	    $fileExists = $this->isInCache($newFile);
 	    if ($fileExists == True) {
