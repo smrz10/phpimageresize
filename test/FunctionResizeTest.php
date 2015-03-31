@@ -7,7 +7,7 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
     private $defaults = array(
         'crop' => false,
-        'scale' => 'false',
+        'scale' => false,
         'thumbnail' => false,
         'maxOnly' => false,
         'canvas-color' => 'transparent',
