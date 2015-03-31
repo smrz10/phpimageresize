@@ -4,12 +4,17 @@ class Configuration {
     const CACHE_PATH = './cache/';
     const REMOTE_PATH = './cache/remote/';
 
+    const CROP_KEY = 'crop';
+    const SCALE_KEY = 'scale';
+    const MAX_ONLY_KEY = 'maxOnly';
     const OUTPUT_FILENAME_KEY = 'output-filename';
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
+    const QUALITY_KEY = 'quality';
     const CACHE_MINUTES_KEY = 'cache_http_minutes';
     const WIDTH_KEY = 'w';
     const HEIGHT_KEY = 'h';
+    
 
     const CONVERT_PATH = 'convert';
 
@@ -23,16 +28,16 @@ class Configuration {
         }        
 
         $defaults = array(
-            'crop' => false,
-            'scale' => 'false',
+            self::CROP_KEY => false,
+            self::SCALE_KEY => false,
             'thumbnail' => false,
-            'maxOnly' => false,
+            self::MAX_ONLY_KEY => false,
             'canvas-color' => 'transparent',
             self::OUTPUT_FILENAME_KEY => false,
             self::CACHE_KEY => self::CACHE_PATH,
             self::REMOTE_KEY => self::REMOTE_PATH,
-            'quality' => 90,
-            'cache_http_minutes' => 20,
+            self::QUALITY_KEY => 90,
+            self::CACHE_MINUTES_KEY => 20,
             self::WIDTH_KEY => null,
             self::HEIGHT_KEY => null);
 
@@ -54,21 +59,47 @@ class Configuration {
     public function obtainConvertPath() {
         return self::CONVERT_PATH;
     }
+    
+    public function obtainCrop() {
+        return $this->opts[self::CROP_KEY];
+    }
 
+    public function obtainScale() {
+        return $this->opts[self::SCALE_KEY];
+    }    
+    
+    public function obtainMaxOnly() {
+        return $this->opts[self::MAX_ONLY_KEY];
+    }        
+    
+    public function obtainQuality() {
+        return $this->opts[self::QUALITY_KEY];
+    }            
+    
+    public function obtainOutputFilename() {
+        return $this->opts[self::OUTPUT_FILENAME_KEY];
+    }
+    
+    public function obtainCacheMinutes() {
+        return $this->opts[self::CACHE_MINUTES_KEY];
+    }    
+    
     public function obtainWidth() {
         return $this->opts[self::WIDTH_KEY];
     }
 
     public function obtainHeight() {
         return $this->opts[self::HEIGHT_KEY];
-    }
-
-    public function obtainCacheMinutes() {
-        return $this->opts[self::CACHE_MINUTES_KEY];
-    }
+    }    
     
-    // Y SI ES EL RESIZER EL QUE DEBE COMPROBAR Y NO ACTUAR
-    // CUANDO LA CONFIGURACIÓN NO ES SUFICIENTE PARA HACER UN RESIZE ????????
+    
+    public function isPanoramic($imagePath) {
+	    list($width,$height) = getimagesize($imagePath);
+	    return $width > $height;
+    }    
+    
+    
+
     private function haveRequiredArguments($opts) {
         $empty_filename = empty($opts[self::OUTPUT_FILENAME_KEY]);
         $empty_width = empty($opts[self::WIDTH_KEY]);
