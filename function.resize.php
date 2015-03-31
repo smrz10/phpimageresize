@@ -13,11 +13,11 @@ function composeResizeOptions($imagePath, $configuration) {
 
 	$hasCrop = (true === $opts['crop']);
 
-	if(!$hasCrop && isPanoramic($imagePath)):
+	if(!$hasCrop && $configuration->isPanoramic($imagePath)):
 		$resize = $w;
 	endif;
 
-	if($hasCrop && !isPanoramic($imagePath)):
+	if($hasCrop && !$configuration->isPanoramic($imagePath)):
 		$resize = $w;
 	endif;
 
@@ -48,7 +48,7 @@ function commandWithCrop($imagePath, $newPath, $configuration) {
 	return $cmd;
 }
 
-function doResize($imagePath, $newPath, $configuration) {
+function doResize($resizer, $imagePath, $newPath, $configuration) {
 	$opts = $configuration->asHash();
 	$w = $configuration->obtainWidth();
 	$h = $configuration->obtainHeight();
@@ -59,7 +59,7 @@ function doResize($imagePath, $newPath, $configuration) {
 			$cmd = commandWithScale($imagePath, $newPath, $configuration);
 		endif;
 	else:
-		$cmd = defaultShellCommand($configuration, $imagePath, $newPath);
+		$cmd = $resizer->defaultShellCommand($configuration, $imagePath, $newPath);
 	endif;
 
 	$c = exec($cmd, $output, $return_code);
@@ -89,13 +89,13 @@ function resize($imagePath,$opts=null){
 	}
 
 
-	$newPath = composeNewPath($imagePath, $configuration);
+	$newPath = $resizer->composeNewPath();
 
-    $create = !isInCache($newPath, $imagePath);
+    $create = $resizer->obtainFilePath($newPath, $imagePath);
 
 	if($create == true):
 		try {
-			doResize($imagePath, $newPath, $configuration);
+			doResize($resizer, $imagePath, $newPath, $configuration);
 		} catch (Exception $e) {
 			return 'cannot resize the image';
 		}
