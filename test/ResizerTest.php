@@ -119,4 +119,146 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $this->assertFalse($resizer->isNecessaryNewFile($pathNewFile,$pathCacheFile));
     }         
+
+    public function testComposeNewPathRequerisArguments() {      
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                              
+        
+        $configuration = new Configuration($this->RequiredArguments);            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);    
+                       
+        $height = $this->RequiredArguments['h'];
+        $width = $this->RequiredArguments['w'];        
+        $newPath = $configuration->obtainCache().md5_file($resizer->obtainFilePath()).'_w'.$width.'_h'.$height.'.jpg';                                    
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());
+    }
+    
+    public function testComposeNewPathOnlyOutputFilename() {
+        $newPath = 'mf_e_dio';
+        
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                              
+        
+        $configuration = new Configuration(array('output-filename'=>$newPath));            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);                                        
+                
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());        
+    }    
+    
+    public function testComposeNewPathWithScaleAndWidth() {
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                              
+        
+        $opts = array('scale'=>true, 'w'=>125);
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);                           
+
+        $width = $opts['w'];        
+        $newPath = $configuration->obtainCache().md5_file($resizer->obtainFilePath()).'_w'.$width.'_sc'.'.jpg';                                    
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());   
+    }
+    
+    public function testComposeNewPathWithCropAndHeight() {
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                              
+        
+        $opts = array('crop'=>true, 'h'=>325);
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);                           
+
+        $height = $opts['h'];        
+        $newPath = $configuration->obtainCache().md5_file($resizer->obtainFilePath()).'_h'.$height.'_cp'.'.jpg';                                    
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());       
+    }        
+
+    public function testComposeNewPathWithCropAndScaleAndHeight() {
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                              
+        
+        $opts = array('crop'=>true, 'scale'=>true, 'h'=>7310);
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);                           
+
+        $height = $opts['h'];        
+        $newPath = $configuration->obtainCache().md5_file($resizer->obtainFilePath()).'_h'.$height.'_cp_sc'.'.jpg';                                    
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());           
+    }            
+
+    public function testComposeNewPathWithCropAndOutputFilename() {
+        $newPath = 'mf_e_dio';
+        $width = 300;
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');                            
+
+        $configuration = new Configuration(array('crop'=>true, 'w'=>$width, 'output-filename'=>$newPath));            
+        $resizer = new Resizer($stubPath,$configuration);
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);                           
+        
+        $this->assertEquals($newPath, $resizer->composeNewPath());                   
+    }    
 }
