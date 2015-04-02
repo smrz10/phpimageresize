@@ -260,5 +260,163 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer->injectFileSystem($stubFileSystem);                           
         
         $this->assertEquals($newPath, $resizer->composeNewPath());                   
+    }  
+    
+    public function testDefaultShellWithRequiredArguments() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';   
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');            
+        $stubPath->method('sanitizedPath')
+            ->willReturn(urldecode($pathNewFile));             
+
+        $configuration = new Configuration($this->RequiredArguments);            
+        $resizer = new Resizer($stubPath,$configuration);    
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);         
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($pathNewFile)) .
+                    ' -thumbnail x' . $this->RequiredArguments['w'] .
+                    ' -quality ' . escapeshellarg('90') . ' ' .
+                    escapeshellarg($resizer->composeNewPath());  
+        
+        $this->assertEquals($command, $resizer->defaultShellCommand());        
+    }  
+    
+    public function testDefaultShellWithRequiredArgumentsAndMaxOnly() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';   
+        $opts = array_merge($this->RequiredArguments, array('maxOnly' => true));
+        
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');            
+        $stubPath->method('sanitizedPath')
+            ->willReturn(urldecode($pathNewFile));             
+
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);    
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);         
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($pathNewFile)) .
+                    ' -thumbnail x' . $this->RequiredArguments['w'] .
+                    '\> -quality ' . escapeshellarg('90') . ' ' .
+                    escapeshellarg($resizer->composeNewPath());  
+        
+        $this->assertEquals($command, $resizer->defaultShellCommand());        
     }    
+    
+    public function testDefaultShellWithMaxOnlyAndWidth() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';   
+        $opts = array('maxOnly' => true, 'w' => 730);
+        
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');            
+        $stubPath->method('sanitizedPath')
+            ->willReturn(urldecode($pathNewFile));             
+
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);    
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);         
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($pathNewFile)) .
+                    ' -thumbnail 730' .
+                    '\> -quality ' . escapeshellarg('90') . ' ' .
+                    escapeshellarg($resizer->composeNewPath());  
+        
+        $this->assertEquals($command, $resizer->defaultShellCommand());        
+    }   
+    
+    public function testDefaultShellWithoutWidth() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';   
+        $opts = array('h' => 730);
+        
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');            
+        $stubPath->method('sanitizedPath')
+            ->willReturn(urldecode($pathNewFile));             
+
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);    
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);         
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($pathNewFile)) .
+                    ' -thumbnail x' .
+                    ' -quality ' . escapeshellarg('90') . ' ' .
+                    escapeshellarg($resizer->composeNewPath());  
+        
+        $this->assertEquals($command, $resizer->defaultShellCommand());        
+    }    
+    
+    public function testDefaultShellWithMaxOnlyAndDimensionsAndQuality() {
+        $pathNewFile = 'http://martinfowler.com/mf.jpg?query=hello&s=fowler';   
+        $opts = array('maxOnly' => true, 'h' => 2010 , 'w' => 730, 'quality' => 96);
+        
+
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+        $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+        $stubPath->method('isHttpProtocol')
+            ->willReturn('http');            
+        $stubPath->method('sanitizedPath')
+            ->willReturn(urldecode($pathNewFile));             
+
+        $configuration = new Configuration($opts);            
+        $resizer = new Resizer($stubPath,$configuration);    
+        
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(True);
+        $resizer->injectFileSystem($stubFileSystem);         
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($pathNewFile)) .
+                    ' -thumbnail x730' .
+                    '\> -quality ' . escapeshellarg('96') . ' ' .
+                    escapeshellarg($resizer->composeNewPath());  
+        
+        $this->assertEquals($command, $resizer->defaultShellCommand());        
+    }       
 }
