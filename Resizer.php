@@ -150,5 +150,46 @@ class Resizer {
         return $signalWidth;
     }
  
+     //////////////////////////////////////////////////////////   
+    
+    public function defaultShellCommand() {
+        $imagePath = escapeshellarg($this->path->sanitizedPath());
+        $newPath = escapeshellarg($this->composeNewPath());
 
+        $command = $this->configuration->obtainConvertPath() . " " . $imagePath .
+                    $this->obtainCmdArgumentThumbnail() . 
+                    $this->obtainCmdArgumentMaxOnly() . 
+                    $this->obtainCmdArgumentQuality() . " " . $newPath;                   
+
+	    return $command;
+    }
+    
+    private function obtainCmdArgumentThumbnail() {
+      	$width = $this->configuration->obtainWidth();
+      	$height = $this->configuration->obtainHeight();
+	    $separator = "";      	
+	    if (!empty($height)) {
+	        $separator = "x";       
+	    }	    
+	    $argumentCommand = " -thumbnail ". $separator . $width;
+               
+        return $argumentCommand;
+    }   
+    
+    private function obtainCmdArgumentMaxOnly() {
+      	$maxOnly = $this->configuration->obtainMaxOnly();
+      	
+	    $argumentCommand = "";
+	    if (isset($maxOnly) && $maxOnly == true) {
+	        $argumentCommand = "\>";       
+	    }	                   
+        return $argumentCommand;
+    }       
+    
+    private function obtainCmdArgumentQuality() {
+      	$quality = escapeshellarg($this->configuration->obtainQuality());      	
+	    $argumentCommand = " -quality " . $quality;
+    
+        return $argumentCommand;
+    }           
 }
