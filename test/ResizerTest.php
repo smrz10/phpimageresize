@@ -283,6 +283,193 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $this->assertEquals($command, $resizer->defaultShellCommand());        
     }  
+    
+    public function testObtainCommandWithRequiredArguments() {	
+	$stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(true);			
+            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);           
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());
+        
+        $this->assertEquals($resizer->obtainCommand(), $resizer->commandWithCrop());
+    }    
+    
+    public function testObtainCommandDefaultWithHeight() {
+	$opts = array('h' => 300, 'w' => null);
+	$stubConfiguration = $this->obtainMockConfiguration($opts);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);			
+            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);           
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());
+        
+        $this->assertEquals($resizer->obtainCommand(), $resizer->defaultShellCommand());    
+    }
+    
+    public function testObtainCommandDefaultWithScaleAndWidth() {
+	$opts = array('h' => null, 'w' => 731);
+	$stubConfiguration = $this->obtainMockConfiguration($opts);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);			
+        $stubConfiguration->method('obtainScale')
+            ->willReturn(true);            
+            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);           
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());
+        
+        $this->assertEquals($resizer->obtainCommand(), $resizer->defaultShellCommand());        
+    }    
+    
+    public function testObtainCommandWithDimensionsAndNotScale() {
+	$stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(true);			
+        $stubConfiguration->method('obtainScale')
+            ->willReturn(false);                        
+            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);           
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());
+        
+        $this->assertEquals($resizer->obtainCommand(), $resizer->commandWithCrop());        
+    }
+    
+    public function testObtainCommandWithDimensionsAndScale() {
+	$stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+	$stubConfiguration->method('isPanoramic')
+	    ->willReturn(true);			
+	$stubConfiguration->method('obtainScale')
+	    ->willReturn(true);                        
+	    
+	$resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);           
+	$resizer->injectFileSystem($this->obtainMockFileExistsTrue());
+	
+	$this->assertEquals($resizer->obtainCommand(), $resizer->commandWithScale());            
+    }    
+    
+    public function testCommandWithCropRequiredArguments() {
+        $opts = $this->requiredArguments; 
+
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);		
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);    
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());         
+        
+        $filePath = $resizer->obtainFilePath();
+        $newPath = $resizer->composeNewPath();                  
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($filePath)) .
+                    ' -resize ' . escapeshellarg('x300') .
+                    ' -size ' . escapeshellarg('600x300') .
+                    ' xc:' . escapeshellarg('transparent') . 
+                    ' +swap -gravity center -composite' . 
+                    ' -quality ' . escapeshellarg('90') . ' ' . escapeshellarg($newPath);  
+        
+        $this->assertEquals($command, $resizer->commandWithCrop());        	
+    }   
+    
+    public function testCommandWithCropIsPanoramicNotCrop() {
+        $opts = $this->requiredArguments; 
+
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(true);		
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);    
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());         
+        
+        $filePath = $resizer->obtainFilePath();
+        $newPath = $resizer->composeNewPath();                  
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($filePath)) .
+                    ' -resize ' . escapeshellarg('600') .
+                    ' -size ' . escapeshellarg('600x300') .
+                    ' xc:' . escapeshellarg('transparent') . 
+                    ' +swap -gravity center -composite' . 
+                    ' -quality ' . escapeshellarg('90') . ' ' . escapeshellarg($newPath);  
+        
+        $this->assertEquals($command, $resizer->commandWithCrop());        	
+    }    
+    
+    public function testCommandWithCropHasCropNotPanoramic() {
+        $opts = $this->requiredArguments; 
+
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);		
+        $stubConfiguration->method('obtainCrop')
+            ->willReturn(true);		            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);    
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());         
+        
+        $filePath = $resizer->obtainFilePath();
+        $newPath = $resizer->composeNewPath();                  
+        
+        
+        $command = 'convert ' . escapeshellarg(urldecode($filePath)) .
+                    ' -resize ' . escapeshellarg('600') .
+                    ' -size ' . escapeshellarg('600x300') .
+                    ' xc:' . escapeshellarg('transparent') . 
+                    ' +swap -gravity center -composite' . 
+                    ' -quality ' . escapeshellarg('90') . ' ' . escapeshellarg($newPath);  
+        
+        $this->assertEquals($command, $resizer->commandWithCrop());        	
+    }    
+    
+    public function testCommandWithScaleRequiredArguments() {
+        $opts = $this->requiredArguments; 
+
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);		
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);    
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());         
+        
+        $filePath = $resizer->obtainFilePath();
+        $newPath = $resizer->composeNewPath();                          
+        
+        $command = 'convert ' . escapeshellarg(urldecode($filePath)) .
+                    ' -resize ' . escapeshellarg('x300') .
+                    ' -quality ' . escapeshellarg('90') . ' ' . escapeshellarg($newPath);  
+        
+        $this->assertEquals($command, $resizer->commandWithScale());        	
+    }  
+    
+    public function testCommandWithScaleHasCropNotPanoramic() {
+        $opts = $this->requiredArguments; 
+
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('isPanoramic')
+            ->willReturn(false);		
+        $stubConfiguration->method('obtainCrop')
+            ->willReturn(true);		            
+        $resizer = new Resizer($this->obtainMockImagePath(),$stubConfiguration);    
+        $resizer->injectFileSystem($this->obtainMockFileExistsTrue());         
+        
+        $filePath = $resizer->obtainFilePath();
+        $newPath = $resizer->composeNewPath();                 
+        
+        $command = 'convert ' . escapeshellarg(urldecode($filePath)) .
+                    ' -resize ' . escapeshellarg('600') .
+                    ' -quality ' . escapeshellarg('90') . ' ' . escapeshellarg($newPath);  
+        
+        $this->assertEquals($command, $resizer->commandWithScale());        	
+    }    
+    
+    public function testNotDoResizeFileValidExists() {               
+        $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
+        $stubConfiguration->method('obtainCacheMinutes')
+            ->willReturn(20);                      
+        
+        $stubImagePath = $this->obtainMockImagePath();
+        $resizer = new Resizer($stubImagePath,$stubConfiguration);                          
+        $resizer->injectFileSystem($this->obtainMockFileCacheIsMoreRecient());        
+        
+        $this->assertEquals($resizer->doResize(),$resizer->obtainCacheFilePath());     
+    }    
+    
     private function obtainMockImagePath() {
         $stubPath = $this->getMockBuilder('ImagePath')
             ->getMock();
