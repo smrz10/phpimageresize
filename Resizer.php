@@ -44,7 +44,6 @@ class Resizer {
         return $imagePath;
     }
 
-
     private function download($filePath) {
         $img = $this->fileSystem->file_get_contents($this->path->sanitizedPath());
         $this->fileSystem->file_put_contents($filePath,$img);
@@ -75,21 +74,21 @@ class Resizer {
     }    
         
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
-	    $fileExists = $this->isInCache($newFile);
-	    if ($fileExists == True) {
-	        $isCacheMoreRecent = $this->isCacheMoreRecent($newFile,$cacheFile);		    
-	    }
-	    $isNecessaryNewFile = !($fileExists && $isCacheMoreRecent);
+	$fileExists = $this->isInCache($newFile);
+	if ($fileExists == true) {
+	    $isCacheMoreRecent = $this->isCacheMoreRecent($newFile,$cacheFile);		    
+	}
+	$isNecessaryNewFile = !($fileExists && $isCacheMoreRecent);
 
-	    return $isNecessaryNewFile;        
+	return $isNecessaryNewFile;        
     }
     
     private function isCacheMoreRecent($newFile,$cacheFile) {	        
-	    $cacheFileTime = date("YmdHis",$this->fileSystem->filemtime($cacheFile));
-	    $newFileTime = date("YmdHis",$this->fileSystem->filemtime($newFile));       
-	    $isCacheMoreRecent = $newFileTime > $cacheFileTime;
-	    
-	    return $isCacheMoreRecent;
+	$cacheFileTime = date("YmdHis",$this->fileSystem->filemtime($cacheFile));
+	$newFileTime = date("YmdHis",$this->fileSystem->filemtime($newFile));       
+	$isCacheMoreRecent = $newFileTime < $cacheFileTime;
+
+	return $isCacheMoreRecent;
     }
     
     public function composeNewPath() {
@@ -150,7 +149,6 @@ class Resizer {
         return $signalWidth;
     }
  
-     //////////////////////////////////////////////////////////   
     
     public function defaultShellCommand() {
         $imagePath = escapeshellarg($this->path->sanitizedPath());
