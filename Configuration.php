@@ -7,6 +7,7 @@ class Configuration {
     const CROP_KEY = 'crop';
     const SCALE_KEY = 'scale';
     const MAX_ONLY_KEY = 'maxOnly';
+    const CANVAS_COLOR_KEY = 'canvas-color';
     const OUTPUT_FILENAME_KEY = 'output-filename';
     const CACHE_KEY = 'cacheFolder';
     const REMOTE_KEY = 'remoteFolder';
@@ -32,7 +33,7 @@ class Configuration {
             self::SCALE_KEY => false,
             'thumbnail' => false,
             self::MAX_ONLY_KEY => false,
-            'canvas-color' => 'transparent',
+            self::CANVAS_COLOR_KEY => 'transparent',
             self::OUTPUT_FILENAME_KEY => false,
             self::CACHE_KEY => self::CACHE_PATH,
             self::REMOTE_KEY => self::REMOTE_PATH,
@@ -71,6 +72,10 @@ class Configuration {
     public function obtainMaxOnly() {
         return $this->opts[self::MAX_ONLY_KEY];
     }        
+
+    public function obtainCanvasColor() {
+        return $this->opts[self::CANVAS_COLOR_KEY];
+    }      
     
     public function obtainQuality() {
         return $this->opts[self::QUALITY_KEY];
