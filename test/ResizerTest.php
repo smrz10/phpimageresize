@@ -418,5 +418,57 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
                     escapeshellarg($resizer->composeNewPath());  
         
         $this->assertEquals($command, $resizer->defaultShellCommand());        
+    private function obtainMockImagePath() {
+        $stubPath = $this->getMockBuilder('ImagePath')
+            ->getMock();
+         $stubPath->method('obtainFileName')
+            ->willReturn('mf.jpg');              
+         $stubPath->method('obtainFileExtension')
+            ->willReturn('jpg');  
+         $stubPath->method('isHttpProtocol')
+            ->willReturn('http');        
+            
+        return $stubPath;
+    }     
+    
+    private function obtainMockFileExistsTrue() {
+        $stubFileSystem = $this->getMockBuilder('FileSystem')
+            ->getMock();
+        $stubFileSystem->method('file_exists')
+            ->willReturn(true);
+            
+        return $stubFileSystem;
+    }
+    
+    private function obtainMockFileCacheIsMoreRecient() {
+        $timeNewFile = 20100307; //07/03/2010;
+        $timeCacheFile = 20100308; //08/03/2010;
+
+        $stubFileSystem = $this->obtainMockFileExistsTrue();    
+        $stubFileSystem->method('filemtime')
+            ->will($this->onConsecutiveCalls($timeNewFile,$timeNewFile,$timeCacheFile,$timeNewFile));    
+            
+        return $stubFileSystem;            
+    }
+    
+    private function obtainMockConfiguration($opts) {    
+        $stubConfiguration = $this->getMockBuilder('Configuration')
+	  ->disableOriginalConstructor()
+	  //->setConstructorArgs(array($this->requiredArguments))
+	  ->getMock();
+	$stubConfiguration->method('obtainRemote')
+            ->willReturn('./cache/remote/'); 
+	$stubConfiguration->method('obtainConvertPath')
+	    ->willReturn('convert');
+	$stubConfiguration->method('obtainCanvasColor')
+	    ->willReturn('transparent');
+	$stubConfiguration->method('obtainQuality')
+	    ->willReturn(90);
+	$stubConfiguration->method('obtainWidth')
+            ->willReturn($opts['w']);
+	$stubConfiguration->method('obtainHeight')
+            ->willReturn($opts['h']);            
+            
+        return $stubConfiguration;
     }       
 }
