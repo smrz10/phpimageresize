@@ -44,28 +44,7 @@ class Resizer {
 
         return $imagePath;
     }
-
-//     private function download($filePath) {
-//         $img = $this->fileSystem->file_get_contents($this->path->sanitizedPath());
-//         $this->fileSystem->file_put_contents($filePath,$img);
-//     }
-
-//     private function isInCache($filePath) {
-//         $fileExists = $this->fileSystem->file_exists($filePath);
-//         if ($fileExists == True) {
-//             $fileValid = $this->fileNotExpired($filePath);
-//         }
-// 
-//         return $fileExists && $fileValid;
-//     }
-// 
-//     private function fileNotExpired($filePath) {
-//         $cacheMinutes = $this->configuration->obtainCacheMinutes();
-//         $fileNotExpired = $this->fileSystem->filemtime($filePath) < strtotime('+'. $cacheMinutes. ' minutes');
-//         
-//         return $fileNotExpired;
-//     }
-
+    
     private function checkPath($path) {
         if (!($path instanceof ImagePath)) throw new InvalidArgumentException();
     }
@@ -75,23 +54,9 @@ class Resizer {
     }    
         
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
-/*	$fileExists = $this->isInCache($newFile);
-	if ($fileExists == true) {
-	    $isCacheMoreRecent = $this->isCacheMoreRecent($newFile,$cacheFile);		    
-	}
-	$isNecessaryNewFile = !($fileExists && $isCacheMoreRecent);
-
-	return $isNecessaryNewFile;*/   
+    
 	return $this->cache->isNecessaryNewFile($newFile,$cacheFile);
     }
-    
-//     private function isCacheMoreRecent($newFile,$cacheFile) {	        
-// 	$cacheFileTime = date("YmdHis",$this->fileSystem->filemtime($cacheFile));
-// 	$newFileTime = date("YmdHis",$this->fileSystem->filemtime($newFile));       
-// 	$isCacheMoreRecent = $newFileTime < $cacheFileTime;
-// 
-// 	return $isCacheMoreRecent;
-//     }
     
     public function composeNewPath() {
 	    $filename = md5_file($this->obtainFilePath());
