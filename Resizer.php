@@ -29,8 +29,6 @@ class Resizer {
         $imagePath = '';
 
         if($this->path->isFileExternal()):
-//             $filename = $this->path->obtainFileName();
-//             $local_filepath = $this->configuration->obtainRemote() .$filename;
 	    $cacheRemotePath = $this->configuration->obtainRemote();
 	    $local_filepath = $this->path->obtainFilePathLocal($cacheRemotePath);
             $inCache = $this->cache->isInCache($local_filepath);
@@ -62,64 +60,9 @@ class Resizer {
     }
     
     public function composeNewPath() {
-	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);
-    
-/*	    $filename = md5_file($this->obtainFilePath());
-	    $widthSignal = $this->obtainSignalWidth();
-	    $heightSignal = $this->obtainSignalHeight();
-	    $cropSignal = $this->obtainSignalCrop();
-	    $scaleSignal = $this->obtainSignalScale();
-	    $extension = '.' . $this->path->obtainFileExtension();
-
-	    $newPath = $this->configuration->obtainCache().$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
-
-        $outputFilename = $this->configuration->obtainOutputFilename();
-        if ($outputFilename) {        
-		    $newPath = $outputFilename;
-	    }
-
-	    return $newPath;*/               
-    }   
-    
-//     private function obtainSignalCrop() {
-//         $signalCrop = "";
-//         if ($this->configuration->obtainCrop() == true) {            
-//             $signalCrop = "_cp";
-//         }
-//         
-//         return $signalCrop;
-//     }
-// 
-//     private function obtainSignalScale() {
-//         $signalScale = "";
-//         if ($this->configuration->obtainScale() == true) {            
-//             $signalScale = "_sc";
-//         }
-//         
-//         return $signalScale;
-//     }        
-//     
-//     private function obtainSignalHeight() {
-//         $signalHeight = "";
-// 	    $height = $this->configuration->obtainHeight();        
-//         
-//         if (!empty($height)) {            
-//             $signalHeight = "_h".$height;
-//         }
-//         
-//         return $signalHeight;
-//     }    
-// 
-//     private function obtainSignalWidth() {
-//         $signalWidth = "";
-// 	    $width = $this->configuration->obtainWidth();        
-//         
-//         if (!empty($width)) {            
-//             $signalWidth = "_w".$width;
-//         }
-//         
-//         return $signalWidth;
-//     }
+	
+	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);   
+    }      
  
     public function doResize() {
         $imagePath = escapeshellarg($this->obtainFilePath());

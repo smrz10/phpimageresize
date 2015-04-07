@@ -8,7 +8,7 @@ date_default_timezone_set('Europe/Berlin');
 define('URL_IMAGE_MF', 'http://martinfowler.com/mf.jpg?query=hello&s=fowler');
 
 class ResizerTest extends PHPUnit_Framework_TestCase {
-    private $requiredArguments = array('h' => 300, 'w' => 600);   
+    private $requiredArguments = array('h' => 300, 'w' => 600);      
 
     /**
      * @expectedException InvalidArgumentException
@@ -486,18 +486,6 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($resizer->doResize(),$resizer->obtainCacheFilePath());     
     }    
     
-//     private function obtainMockImagePath() {
-// //         $stubPath = $this->getMockBuilder('ImagePath')
-// //             ->getMock();   
-// //          $stubPath->method('obtainFilePathLocal')
-// //             ->willReturn('./cache/remote/mf.jpg');     
-// //          $stubPath->method('isFileExternal')
-// //             ->willReturn(true);        
-// //             
-// //         return $stubPath;
-// 	return new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler');
-//     }     
-    
     private function obtainMockFileExistsTrue() {
         $stubFileSystem = $this->getMockBuilder('FileSystem')
             ->getMock();
@@ -513,8 +501,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }
     
     private function obtainMockFileCacheIsMoreRecient() {
-        $timeNewFile = 20100307; //07/03/2010;
-        $timeCacheFile = 20100308; //08/03/2010;
+        $timeNewFile = 20100307;
+        $timeCacheFile = 20100308;
 
         $stubFileSystem = $this->obtainMockFileExistsTrue();    
         $stubFileSystem->method('filemtime')
@@ -526,7 +514,6 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     private function obtainMockConfiguration($opts) {    
         $stubConfiguration = $this->getMockBuilder('Configuration')
 	  ->disableOriginalConstructor()
-	  //->setConstructorArgs(array($this->requiredArguments))
 	  ->getMock();
 	$stubConfiguration->method('obtainRemote')
             ->willReturn('./cache/remote/'); 

@@ -50,9 +50,8 @@ class ImagePath {
 	$local_filepath = $cacheRemotePath .$filename;	
 
 	return $local_filepath;
-    }
+    } 
     
-    //////////////////
     public function composeNewPath($filePath, $configuration) {
 	$filename = md5_file($filePath);
 	$widthSignal = $this->obtainSignalWidth($configuration);
@@ -110,8 +109,6 @@ class ImagePath {
         
         return $signalWidth;
     }    
-
-    ////////
     
     private function sanitize($path) {
         
