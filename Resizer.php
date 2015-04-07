@@ -22,14 +22,17 @@ class Resizer {
     public function injectFileSystem(FileSystem $fileSystem) {
         $this->fileSystem = $fileSystem;
         $this->cache->injectFileSystem($fileSystem);
+        $this->path->injectFileSystem($fileSystem);
     }
 
     public function obtainFilePath() {
         $imagePath = '';
 
-        if($this->path->isHttpProtocol()):
-            $filename = $this->path->obtainFileName();
-            $local_filepath = $this->configuration->obtainRemote() .$filename;
+        if($this->path->isFileExternal()):
+//             $filename = $this->path->obtainFileName();
+//             $local_filepath = $this->configuration->obtainRemote() .$filename;
+	    $cacheRemotePath = $this->configuration->obtainRemote();
+	    $local_filepath = $this->path->obtainFilePathLocal($cacheRemotePath);
             $inCache = $this->cache->isInCache($local_filepath);
 
             if(!$inCache):
@@ -59,7 +62,9 @@ class Resizer {
     }
     
     public function composeNewPath() {
-	    $filename = md5_file($this->obtainFilePath());
+	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);
+    
+/*	    $filename = md5_file($this->obtainFilePath());
 	    $widthSignal = $this->obtainSignalWidth();
 	    $heightSignal = $this->obtainSignalHeight();
 	    $cropSignal = $this->obtainSignalCrop();
@@ -73,48 +78,48 @@ class Resizer {
 		    $newPath = $outputFilename;
 	    }
 
-	    return $newPath;               
+	    return $newPath;*/               
     }   
     
-    private function obtainSignalCrop() {
-        $signalCrop = "";
-        if ($this->configuration->obtainCrop() == true) {            
-            $signalCrop = "_cp";
-        }
-        
-        return $signalCrop;
-    }
-
-    private function obtainSignalScale() {
-        $signalScale = "";
-        if ($this->configuration->obtainScale() == true) {            
-            $signalScale = "_sc";
-        }
-        
-        return $signalScale;
-    }        
-    
-    private function obtainSignalHeight() {
-        $signalHeight = "";
-	    $height = $this->configuration->obtainHeight();        
-        
-        if (!empty($height)) {            
-            $signalHeight = "_h".$height;
-        }
-        
-        return $signalHeight;
-    }    
-
-    private function obtainSignalWidth() {
-        $signalWidth = "";
-	    $width = $this->configuration->obtainWidth();        
-        
-        if (!empty($width)) {            
-            $signalWidth = "_w".$width;
-        }
-        
-        return $signalWidth;
-    }
+//     private function obtainSignalCrop() {
+//         $signalCrop = "";
+//         if ($this->configuration->obtainCrop() == true) {            
+//             $signalCrop = "_cp";
+//         }
+//         
+//         return $signalCrop;
+//     }
+// 
+//     private function obtainSignalScale() {
+//         $signalScale = "";
+//         if ($this->configuration->obtainScale() == true) {            
+//             $signalScale = "_sc";
+//         }
+//         
+//         return $signalScale;
+//     }        
+//     
+//     private function obtainSignalHeight() {
+//         $signalHeight = "";
+// 	    $height = $this->configuration->obtainHeight();        
+//         
+//         if (!empty($height)) {            
+//             $signalHeight = "_h".$height;
+//         }
+//         
+//         return $signalHeight;
+//     }    
+// 
+//     private function obtainSignalWidth() {
+//         $signalWidth = "";
+// 	    $width = $this->configuration->obtainWidth();        
+//         
+//         if (!empty($width)) {            
+//             $signalWidth = "_w".$width;
+//         }
+//         
+//         return $signalWidth;
+//     }
  
     public function doResize() {
         $imagePath = escapeshellarg($this->obtainFilePath());
