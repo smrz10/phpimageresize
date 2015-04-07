@@ -17,5 +17,8 @@ class FileSystem {
     public function filemtime($filename) {
         return filemtime($filename);
     }
-
+    
+    public function pathinfo($filename) {
+        return pathinfo($filename);
+    }
 }
