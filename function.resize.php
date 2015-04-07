@@ -17,7 +17,6 @@ function resize($imagePath,$opts=null){
 	try {
 		$cacheFilePath = $resizer->doResize();
 	} catch (Exception $e) {
-		//return 'cannot resize the image';
 		return $e->getMessage();
 	}
 
