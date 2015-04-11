@@ -578,19 +578,20 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     }    
     
     public function testNotDoResizeFileValidExists() {               
+        
         $stubConfiguration = $this->obtainMockConfiguration($this->requiredArguments);
         $stubConfiguration->method('obtainCacheMinutes')
             ->willReturn(20);                      
         
         $cache = new Cache(CACHE_MINUTES);
         $imagePath = new ImagePath(URL_IMAGE_MF, $cache);  
-        $resizer = new Resizer($imagePath,$stubConfiguration);                                  
+        $resizer = new Resizer($imagePath,$stubConfiguration);                                          
         
         $stub = $this->obtainMockFileCacheIsMoreRecient();    
         //$imagePath->injectFileSystem($stub);
-        $cache->injectFileSystem($stub);                                               	                                
+        $cache->injectFileSystem($stub);                                               	                                       
         
-        $this->assertEquals($resizer->doResize(),$resizer->obtainCacheFilePath());     
+        $this->assertEquals($resizer->doResize(),$imagePath->obtainCacheFilePath($resizer->composeNewPath()));     
     }    
     
     private function obtainMockFileExistsTrue() {
