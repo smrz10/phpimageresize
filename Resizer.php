@@ -6,26 +6,21 @@ class Resizer {
 
     private $path;
     private $configuration;
-    //private $cache;    
-
-    //public function __construct($path, $configuration, $cache) {
+    
     public function __construct($path, $configuration) {    
         $this->checkPath($path);
         $this->checkConfiguration($configuration);
         $this->path = $path;
-        $this->configuration = $configuration;
-        //$this->cache = $cache;
+        $this->configuration = $configuration;        
     }
 
     public function obtainFilePath() {
-
-	//return $this->path->obtainFilePath($this->configuration->obtainRemote(), $this->cache);
+	
 	return $this->path->obtainFilePath($this->configuration->obtainRemote());
     } 
         
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
-
-	//return $this->path->existsNewPath($newFile, $cacheFile, $this->cache);
+	
 	return $this->path->existsNewPath($newFile, $cacheFile);
     }
     
