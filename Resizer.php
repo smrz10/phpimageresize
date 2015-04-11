@@ -17,32 +17,13 @@ class Resizer {
     }
 
     public function obtainFilePath() {
+
 	return $this->path->obtainFilePath($this->configuration->obtainRemote(), $this->cache);
-    
-//         $imagePath = '';
-// 
-//         if($this->path->isFileExternal()):
-// 	    $cacheRemotePath = $this->configuration->obtainRemote();
-// 	    $local_filepath = $this->path->obtainFilePathLocal($cacheRemotePath);
-//             $inCache = $this->cache->isInCache($local_filepath);
-// 
-//             if(!$inCache):
-//                 $this->cache->download($this->path->sanitizedPath(), $local_filepath);
-//             endif;
-//             $imagePath = $local_filepath;
-//         endif;
-// 
-// 	if (!$this->cache->checkFileInLocal($imagePath)) {	
-// 	    throw new RuntimeException('image not found');
-// 	}
-// 
-//         return $imagePath;
     } 
         
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
 
 	return $this->path->existsNewPath($newFile, $cacheFile, $this->cache);
-	//return $this->cache->isNecessaryNewFile($newFile,$cacheFile);
     }
     
     public function composeNewPath() {

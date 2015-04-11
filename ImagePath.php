@@ -29,12 +29,11 @@ class ImagePath {
         return in_array($this->obtainScheme(), $this->valid_http_protocols);
     }
 
-    //////
     public function obtainFilePath($remote, $cache) {
         $imagePath = '';
 
         if($this->isFileExternal()):
-	    $cacheRemotePath = $remote; // $this->configuration->obtainRemote();
+	    $cacheRemotePath = $remote;
 	    $local_filepath = $this->obtainFilePathLocal($cacheRemotePath);
             $inCache = $cache->isInCache($local_filepath);
 
