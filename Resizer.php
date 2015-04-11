@@ -28,8 +28,10 @@ class Resizer {
     }      
  
     public function doResize() {
-        $imagePath = escapeshellarg($this->obtainFilePath());
-        $newPath = escapeshellarg($this->composeNewPath());     	
+        //$imagePath = escapeshellarg($this->obtainFilePath());
+        //$newPath = escapeshellarg($this->composeNewPath());     	
+        $imagePath = $this->obtainFilePath();
+        $newPath = $this->composeNewPath();     	        
         if ($this->isNecessaryNewFile($imagePath,$newPath) == false) {
             return $this->path->obtainCacheFilePath($newPath);
         }    
