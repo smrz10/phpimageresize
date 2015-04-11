@@ -5,20 +5,20 @@
 class ImagePath {
 
     private $path;
-    private $fileSystem;
+//     private $fileSystem;
     private $cache;
     
     private $valid_http_protocols = array('http', 'https');
 
     public function __construct($url='', $cache) {
         $this->path = $this->sanitize($url);
-	$this->fileSystem = new FileSystem();
+// 	$this->fileSystem = new FileSystem();
 	$this->cache = $cache;
     }
 
-    public function injectFileSystem(FileSystem $fileSystem) {
-        $this->fileSystem = $fileSystem;
-    }
+//     public function injectFileSystem(FileSystem $fileSystem) {
+//         $this->fileSystem = $fileSystem;
+//     }
     
     
     public function sanitizedPath() {
