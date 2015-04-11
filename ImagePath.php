@@ -8,6 +8,8 @@ class ImagePath {
     private $valid_http_protocols = array('http', 'https');
 
     public function __construct($url='', $cache) {
+        $this->checkCache($cache);
+        
         $this->path = $this->sanitize($url);
 	$this->cache = $cache;
     }    
@@ -148,4 +150,8 @@ class ImagePath {
         
         return $purl['scheme'];
     }
+    
+    private function checkCache($cache) {
+        if (!($cache instanceof Cache)) throw new InvalidArgumentException();
+    }    
 }
