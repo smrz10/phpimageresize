@@ -6,12 +6,14 @@ class ImagePath {
 
     private $path;
     private $fileSystem;
+    private $cache;
     
     private $valid_http_protocols = array('http', 'https');
 
-    public function __construct($url='') {
+    public function __construct($url='', $cache) {
         $this->path = $this->sanitize($url);
 	$this->fileSystem = new FileSystem();
+	$this->cache = $cache;
     }
 
     public function injectFileSystem(FileSystem $fileSystem) {
@@ -29,21 +31,21 @@ class ImagePath {
         return in_array($this->obtainScheme(), $this->valid_http_protocols);
     }
 
-    public function obtainFilePath($remote, $cache) {
+    public function obtainFilePath($remote) {
         $imagePath = '';
 
         if($this->isFileExternal()):
 	    $cacheRemotePath = $remote;
 	    $local_filepath = $this->obtainFilePathLocal($cacheRemotePath);
-            $inCache = $cache->isInCache($local_filepath);
+            $inCache = $this->cache->isInCache($local_filepath);
 
             if(!$inCache):
-                $cache->download($this->sanitizedPath(), $local_filepath);
+                $this->cache->download($this->sanitizedPath(), $local_filepath);
             endif;
             $imagePath = $local_filepath;
         endif;
 
-	if (!$cache->checkFileInLocal($imagePath)) {	
+	if (!$this->cache->checkFileInLocal($imagePath)) {	
 	    throw new RuntimeException('image not found');
 	}
 
@@ -93,8 +95,8 @@ class ImagePath {
 	return $newPath;               
     }   
     
-    public function existsNewPath($newFile, $cacheFile, $cache) {
-	return $cache->isNecessaryNewFile($newFile,$cacheFile);    
+    public function existsNewPath($newFile, $cacheFile) {
+	return $this->cache->isNecessaryNewFile($newFile,$cacheFile);    
     }
     
     private function obtainSignalCrop($configuration) {
