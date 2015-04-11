@@ -13,9 +13,6 @@ class Resizer {
         $this->checkConfiguration($configuration);
         $this->path = $path;
         $this->configuration = $configuration;
-    public function injectFileSystem(FileSystem $fileSystem) {
-        $this->cache->injectFileSystem($fileSystem);
-        $this->path->injectFileSystem($fileSystem);
         $this->cache = $cache;
     }
 
