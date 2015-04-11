@@ -53,6 +53,11 @@ class Cache {
 	return $isNecessaryNewFile;        
     }
     
+    public function pathinfo($path) {
+    
+	return $this->fileSystem->pathinfo($path);
+    }
+    
     private function isCacheMoreRecent($newFile,$cacheFile) {	        
 	$cacheFileTime = date("YmdHis",$this->fileSystem->filemtime($cacheFile));
 	$newFileTime = date("YmdHis",$this->fileSystem->filemtime($newFile));       

@@ -53,14 +53,16 @@ class ImagePath {
     }     
     
     public function obtainFileName() {
-        $finfo = $this->fileSystem->pathinfo($this->path);
+        //$finfo = $this->fileSystem->pathinfo($this->path);
+        $finfo = $this->cache->pathinfo($this->path);
         list($filename) = explode('?',$finfo['basename']);
         
         return $filename;
     }
     
     public function obtainFileExtension() {
-	$fileInfo = $this->fileSystem->pathinfo($this->path);
+	//$fileInfo = $this->fileSystem->pathinfo($this->path);
+	$fileInfo = $this->cache->pathinfo($this->path);
 	
 	return $fileInfo['extension'];        
     }
