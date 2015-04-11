@@ -8,19 +8,16 @@ class Resizer {
     private $path;
     private $configuration;
     private $cache;
-    private $fileSystem;
 
     public function __construct($path, $configuration) {
         $this->checkPath($path);
         $this->checkConfiguration($configuration);
         $this->path = $path;
         $this->configuration = $configuration;
-        $this->fileSystem = new FileSystem();
         $this->cache = new Cache($configuration->obtainCacheMinutes());
     }
 
     public function injectFileSystem(FileSystem $fileSystem) {
-        $this->fileSystem = $fileSystem;
         $this->cache->injectFileSystem($fileSystem);
         $this->path->injectFileSystem($fileSystem);
     }
