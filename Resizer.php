@@ -139,6 +139,14 @@ class Resizer {
 
 	return $command;
     }      
+    }   
+    
+    public function obtainCacheFilePath() {
+        $newPath = escapeshellarg($this->composeNewPath());
+        $filePathRelative = str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);       
+        
+        return $filePathRelative;
+    }    
     
     private function obtainCmdArgumentThumbnail() {
       	$width = $this->configuration->obtainWidth();
@@ -219,12 +227,13 @@ class Resizer {
     private function obtainCmdArgumentsForCrop() {
     
         return "+swap -gravity center -composite"; 
-    }
+    }             
     
-    public function obtainCacheFilePath() {
-        $newPath = escapeshellarg($this->composeNewPath());
-        $filePathRelative = str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);       
-        
-        return $filePathRelative;
-    }               
+    private function checkPath($path) {
+        if (!($path instanceof ImagePath)) throw new InvalidArgumentException();
+    }
+
+    private function checkConfiguration($configuration) {
+        if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
+    }     
 }
