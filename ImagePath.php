@@ -1,5 +1,7 @@
 <?php
 
+require 'ComposePath.php';
+
 class ImagePath {
 
     private $path;
@@ -78,7 +80,10 @@ class ImagePath {
     }    
     
     public function composeNewPath($filePath, $configuration) {
-	$filename = md5_file($filePath);
+	$composer = new ComposePath($filePath, $this->obtainFileExtension(), $configuration);
+	return $composer->composeNewPath();
+    
+/*	$filename = md5_file($filePath);
 	$widthSignal = $this->obtainSignalWidth($configuration);
 	$heightSignal = $this->obtainSignalHeight($configuration);
 	$cropSignal = $this->obtainSignalCrop($configuration);
@@ -92,58 +97,59 @@ class ImagePath {
 	    $newPath = $outputFilename;
 	}
 
-	return $newPath;               
+	return $newPath;*/               
     }   
     
     public function existsNewPath($newFile, $cacheFile) {
 	return $this->cache->isNecessaryNewFile($newFile,$cacheFile);    
     }
     
-    private function obtainSignalCrop($configuration) {
-        $signalCrop = "";
-        if ($configuration->obtainCrop() == true) {            
-            $signalCrop = "_cp";
-        }
-        
-        return $signalCrop;
-    }
+//     private function obtainSignalCrop($configuration) {
+//         $signalCrop = "";
+//         if ($configuration->obtainCrop() == true) {            
+//             $signalCrop = "_cp";
+//         }
+//         
+//         return $signalCrop;
+//     }
+// 
+//     private function obtainSignalScale($configuration) {
+//         $signalScale = "";
+//         if ($configuration->obtainScale() == true) {            
+//             $signalScale = "_sc";
+//         }
+//         
+//         return $signalScale;
+//     }        
+//     
+//     private function obtainSignalHeight($configuration) {
+//         $signalHeight = "";
+// 	$height = $configuration->obtainHeight();        
+//         
+//         if (!empty($height)) {            
+//             $signalHeight = "_h".$height;
+//         }
+//         
+//         return $signalHeight;
+//     }    
+// 
+//     private function obtainSignalWidth($configuration) {
+//         $signalWidth = "";
+// 	$width = $configuration->obtainWidth();        
+//         
+//         if (!empty($width)) {            
+//             $signalWidth = "_w".$width;
+//         }
+//         
+//         return $signalWidth;
+//     }    
+//     
 
-    private function obtainSignalScale($configuration) {
-        $signalScale = "";
-        if ($configuration->obtainScale() == true) {            
-            $signalScale = "_sc";
-        }
-        
-        return $signalScale;
-    }        
-    
-    private function obtainSignalHeight($configuration) {
-        $signalHeight = "";
-	$height = $configuration->obtainHeight();        
-        
-        if (!empty($height)) {            
-            $signalHeight = "_h".$height;
-        }
-        
-        return $signalHeight;
-    }    
-
-    private function obtainSignalWidth($configuration) {
-        $signalWidth = "";
-	$width = $configuration->obtainWidth();        
-        
-        if (!empty($width)) {            
-            $signalWidth = "_w".$width;
-        }
-        
-        return $signalWidth;
-    }    
-    
     private function sanitize($path) {
-        
+         
         return urldecode($path);
     }
-
+ 
     private function obtainScheme() {
         if ($this->path == '') return '';
         $purl = parse_url($this->path);
