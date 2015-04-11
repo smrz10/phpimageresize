@@ -43,16 +43,14 @@ class ImagePath {
         return $imagePath;
     }     
     
-    public function obtainFileName() {
-        //$finfo = $this->fileSystem->pathinfo($this->path);
+    public function obtainFileName() {        
         $finfo = $this->cache->pathinfo($this->path);
         list($filename) = explode('?',$finfo['basename']);
         
         return $filename;
     }
     
-    public function obtainFileExtension() {
-	//$fileInfo = $this->fileSystem->pathinfo($this->path);
+    public function obtainFileExtension() {	
 	$fileInfo = $this->cache->pathinfo($this->path);
 	
 	return $fileInfo['extension'];        
