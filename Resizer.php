@@ -1,7 +1,5 @@
 <?php
 
-require 'FileSystem.php';
-
 class Resizer {
 
     private $path;
