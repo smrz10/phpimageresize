@@ -27,9 +27,7 @@ class Resizer {
 	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);   
     }      
  
-    public function doResize() {
-        //$imagePath = escapeshellarg($this->obtainFilePath());
-        //$newPath = escapeshellarg($this->composeNewPath());     	
+    public function doResize() {    	
         $imagePath = $this->obtainFilePath();
         $newPath = $this->composeNewPath();     	        
         if ($this->isNecessaryNewFile($imagePath,$newPath) == false) {
@@ -104,14 +102,6 @@ class Resizer {
 
 	return $command;
     }   
-    
-/*    public function obtainCacheFilePath($path) {
-        //$newPath = escapeshellarg($path$this->composeNewPath());
-        $newPath = escapeshellarg($path);
-        $filePathRelative = str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);       
-        
-        return $filePathRelative;
-    }   */ 
     
     private function obtainCmdArgumentThumbnail() {
       	$width = $this->configuration->obtainWidth();

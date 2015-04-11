@@ -69,7 +69,6 @@ class ImagePath {
     } 
     
     public function obtainCacheFilePath($path) {
-        //$newPath = escapeshellarg($path$this->composeNewPath());
         $newPath = escapeshellarg($path);
         $filePathRelative = str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);       
         
