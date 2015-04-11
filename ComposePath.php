@@ -20,7 +20,7 @@ class ComposePath {
 	$heightSignal = $this->obtainSignalHeight();
 	$cropSignal = $this->obtainSignalCrop();
 	$scaleSignal = $this->obtainSignalScale();
-	$extension = '.' . $this->fileExtension;  //$this->obtainFileExtension();
+	$extension = '.' . $this->fileExtension;
 
 	$newPath = $this->configuration->obtainCache().$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
 
