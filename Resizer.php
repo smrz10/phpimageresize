@@ -1,25 +1,22 @@
 <?php
 
 require 'FileSystem.php';
-require 'cache.php';
 
 class Resizer {
 
     private $path;
     private $configuration;
-    private $cache;
+    private $cache;    
 
-    public function __construct($path, $configuration) {
+    public function __construct($path, $configuration, $cache) {
         $this->checkPath($path);
         $this->checkConfiguration($configuration);
         $this->path = $path;
         $this->configuration = $configuration;
-        $this->cache = new Cache($configuration->obtainCacheMinutes());
-    }
-
     public function injectFileSystem(FileSystem $fileSystem) {
         $this->cache->injectFileSystem($fileSystem);
         $this->path->injectFileSystem($fileSystem);
+        $this->cache = $cache;
     }
 
     public function obtainFilePath() {
