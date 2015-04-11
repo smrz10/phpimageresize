@@ -29,6 +29,28 @@ class ImagePath {
         return in_array($this->obtainScheme(), $this->valid_http_protocols);
     }
 
+    //////
+    public function obtainFilePath($remote, $cache) {
+        $imagePath = '';
+
+        if($this->isFileExternal()):
+	    $cacheRemotePath = $remote; // $this->configuration->obtainRemote();
+	    $local_filepath = $this->obtainFilePathLocal($cacheRemotePath);
+            $inCache = $cache->isInCache($local_filepath);
+
+            if(!$inCache):
+                $cache->download($this->sanitizedPath(), $local_filepath);
+            endif;
+            $imagePath = $local_filepath;
+        endif;
+
+	if (!$cache->checkFileInLocal($imagePath)) {	
+	    throw new RuntimeException('image not found');
+	}
+
+        return $imagePath;
+    }     
+    
     public function obtainFileName() {
         $finfo = $this->fileSystem->pathinfo($this->path);
         list($filename) = explode('?',$finfo['basename']);
@@ -71,6 +93,10 @@ class ImagePath {
 
 	return $newPath;               
     }   
+    
+    public function existsNewPath($newFile, $cacheFile, $cache) {
+	return $cache->isNecessaryNewFile($newFile,$cacheFile);    
+    }
     
     private function obtainSignalCrop($configuration) {
         $signalCrop = "";
