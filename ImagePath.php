@@ -1,5 +1,7 @@
 <?php
 
+//require 'FileSystem.php';
+
 class ImagePath {
 
     private $path;
