@@ -33,17 +33,15 @@ class Resizer {
         if ($this->isNecessaryNewFile($imagePath,$newPath) == false) {
             return $this->path->obtainCacheFilePath($newPath);
         }    
+    private function exec($command) {
+	$exec = exec($command, $output, $return_code);
 
-        $cmd = $this->obtainCommand(); 
-	$exec = exec($cmd, $output, $return_code);
-	
 	if($return_code != 0) {
-	    error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
+	    error_log("Tried to execute : $command, return code: $return_code, output: " . print_r($output, true));
 	    throw new RuntimeException('cannot resize the image');
-	}
-	
-	return $this->path->obtainCacheFilePath($newPath);
-    }
+	}    
+    }    
+    
     
     public function obtainCommand() {        
 	$width = $this->configuration->obtainWidth();
