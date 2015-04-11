@@ -68,6 +68,14 @@ class ImagePath {
 	return $local_filepath;
     } 
     
+    public function obtainCacheFilePath($path) {
+        //$newPath = escapeshellarg($path$this->composeNewPath());
+        $newPath = escapeshellarg($path);
+        $filePathRelative = str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);       
+        
+        return $filePathRelative;
+    }    
+    
     public function composeNewPath($filePath, $configuration) {
 	$filename = md5_file($filePath);
 	$widthSignal = $this->obtainSignalWidth($configuration);
