@@ -46,13 +46,6 @@ class Resizer {
         return $imagePath;
     }
     
-    private function checkPath($path) {
-        if (!($path instanceof ImagePath)) throw new InvalidArgumentException();
-    }
-
-    private function checkConfiguration($configuration) {
-        if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
-    }    
         
     public function isNecessaryNewFile($newFile,$cacheFile) {	    
     
