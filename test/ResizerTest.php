@@ -19,8 +19,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer = new Resizer('anyNonPathObject', 'nonConfigurationObject', 'nonCache');
     }
 
-    public function testInstantiation() {
-        $this->assertInstanceOf('Resizer', new Resizer(new ImagePath(''), new Configuration($this->requiredArguments),new Cache(30)));
+    public function testInstantiation() {	
+        $this->assertInstanceOf('Resizer', new Resizer(new ImagePath('',new Cache(30)), new Configuration($this->requiredArguments)));
     }
     
     public function testTryCatch() {
@@ -41,8 +41,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testObtainFilePathErrorNotFile() {	
         $configuration = new Configuration($this->requiredArguments);
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);        
-        $resizer = new Resizer($imagePath, $configuration, $cache);      
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);        
+        $resizer = new Resizer($imagePath, $configuration);      
         
         $stub = $this->getMockBuilder('FileSystem')
             ->getMock();
@@ -58,8 +58,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testObtainLocallyCachedFilePath() {
         $configuration = new Configuration(array('w' => 800, 'h' => 600));
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath, $configuration, $cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath, $configuration);
 
         $stub = $this->obtainMockFileExistsTrue();
         $stub->method('file_get_contents')
@@ -74,8 +74,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testLocallyCachedFilePathFail() {
         $configuration = new Configuration(array('w' => 800, 'h' => 600));
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath, $configuration, $cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath, $configuration);
         
         $stub = $this->obtainMockFileExistsTrue();
         $stub->method('filemtime')
@@ -91,7 +91,7 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testCreateImagePath() {
         $configuration = new Configuration($this->requiredArguments);    
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $resizer = new Resizer(new ImagePath(URL_IMAGE_MF),$configuration, $cache);
+        $resizer = new Resizer(new ImagePath(URL_IMAGE_MF, $cache),$configuration);
     }
     
     public function testCreateNewFileIsNotCache() {
@@ -99,8 +99,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $pathCacheFile = './cache/remote/mf_NewFile.jpg';        
         $configuration = new Configuration($this->requiredArguments);    
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath($pathNewFile);  
-        $resizer = new Resizer($imagePath,$configuration, $cache);        
+        $imagePath = new ImagePath($pathNewFile, $cache);  
+        $resizer = new Resizer($imagePath,$configuration);        
         
         $stub = $this->getMockBuilder('FileSystem')
             ->getMock();
@@ -118,8 +118,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $pathCacheFile = './cache/remote/mf_NewFile.jpg';
         $configuration = new Configuration($this->requiredArguments);    
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath($pathNewFile);                
-        $resizer = new Resizer($imagePath,$configuration,$cache);        
+        $imagePath = new ImagePath($pathNewFile, $cache);                
+        $resizer = new Resizer($imagePath,$configuration);        
         
         $stub = $this->obtainMockFileExistsTrue();            
         $stub->method('filemtime')
@@ -136,8 +136,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $configuration = new Configuration($this->requiredArguments);    
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);                          
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);                          
         
         $stub = $this->obtainMockFileCacheIsMoreRecient();        
         $imagePath->injectFileSystem($stub);
@@ -149,8 +149,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testComposeNewPathRequerisArguments() {            
         $configuration = new Configuration($this->requiredArguments);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);        
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);        
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -168,8 +168,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
  
         $configuration = new Configuration(array('output-filename'=>$newPath));            
 	$cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -183,8 +183,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $configuration = new Configuration($opts);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -201,8 +201,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $configuration = new Configuration($opts);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -219,8 +219,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         
         $configuration = new Configuration($opts);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -238,8 +238,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration(array('crop'=>true, 'w'=>$width, 'output-filename'=>$newPath));            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);        
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);        
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -251,8 +251,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
     public function testDefaultShellWithRequiredArguments() {  
         $configuration = new Configuration($this->requiredArguments);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);    
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);    
 
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -273,8 +273,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration($opts);    
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);    
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);    
 
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -295,8 +295,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration($opts);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);            
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);            
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -317,8 +317,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration($opts);            
 	$cache = new Cache($configuration->obtainCacheMinutes());        
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);    
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);    
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -339,8 +339,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration($opts);            
         $cache = new Cache($configuration->obtainCacheMinutes());
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$configuration,$cache);        
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$configuration);        
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -362,8 +362,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(true);		            
     
 	$cache = new Cache(CACHE_MINUTES);
-	$imagePath = new ImagePath(URL_IMAGE_MF);            
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);  
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);            
+        $resizer = new Resizer($imagePath,$stubConfiguration);  
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -379,8 +379,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(false);	        	
 
 	$cache = new Cache(CACHE_MINUTES);            
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                   
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$stubConfiguration);                   
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -398,8 +398,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(true);                  	
         
         $cache = new Cache(CACHE_MINUTES);            
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);        
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$stubConfiguration);        
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -416,8 +416,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(false);                     
     
 	$cache = new Cache(CACHE_MINUTES);                
-        $imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                           
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$stubConfiguration);                           
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -434,8 +434,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 	    ->willReturn(true);          
 	
 	$cache = new Cache(CACHE_MINUTES);                
-	$imagePath = new ImagePath(URL_IMAGE_MF);
-	$resizer = new Resizer($imagePath,$stubConfiguration,$cache); 	
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+	$resizer = new Resizer($imagePath,$stubConfiguration); 	
 	
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -451,8 +451,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(false);	         
         
         $cache = new Cache(CACHE_MINUTES);                
-	$imagePath = new ImagePath(URL_IMAGE_MF);
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                    
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);
+        $resizer = new Resizer($imagePath,$stubConfiguration);                    
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -478,8 +478,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(true);		         
         
         $cache = new Cache(CACHE_MINUTES);                
-        $imagePath = new ImagePath(URL_IMAGE_MF);    
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);    
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);    
+        $resizer = new Resizer($imagePath,$stubConfiguration);    
                
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -507,8 +507,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(true);		         
         
         $cache = new Cache(CACHE_MINUTES);                
-	$imagePath = new ImagePath(URL_IMAGE_MF);                
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);            
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);                
+        $resizer = new Resizer($imagePath,$stubConfiguration);            
   
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -534,8 +534,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(false);	         
         
         $cache = new Cache(CACHE_MINUTES);
-	$imagePath = new ImagePath(URL_IMAGE_MF);  
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                  
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);  
+        $resizer = new Resizer($imagePath,$stubConfiguration);                  
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -560,8 +560,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(true);		         
         
         $cache = new Cache(CACHE_MINUTES);
-	$imagePath = new ImagePath(URL_IMAGE_MF);  
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                    
+	$imagePath = new ImagePath(URL_IMAGE_MF, $cache);  
+        $resizer = new Resizer($imagePath,$stubConfiguration);                    
         
         $stub = $this->obtainMockFileExistsTrue();    
         $imagePath->injectFileSystem($stub);
@@ -583,8 +583,8 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
             ->willReturn(20);                      
         
         $cache = new Cache(CACHE_MINUTES);
-        $imagePath = new ImagePath(URL_IMAGE_MF);  
-        $resizer = new Resizer($imagePath,$stubConfiguration,$cache);                                  
+        $imagePath = new ImagePath(URL_IMAGE_MF, $cache);  
+        $resizer = new Resizer($imagePath,$stubConfiguration);                                  
         
         $stub = $this->obtainMockFileCacheIsMoreRecient();    
         $imagePath->injectFileSystem($stub);
