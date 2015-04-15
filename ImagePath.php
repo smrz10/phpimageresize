@@ -58,12 +58,7 @@ class ImagePath {
 	$fileInfo = $this->cache->pathinfo($this->path);
 	
 	return $fileInfo['extension'];        
-    }
-    
-    public function isFileExternal() {
-    
-	return $this->isHttpProtocol();
-    }
+    }  
     
     public function obtainFilePathLocal($cacheRemotePath) {
 	$filename = $this->obtainFileName();
@@ -92,6 +87,11 @@ class ImagePath {
          
         return urldecode($path);
     }
+    
+    private function isFileExternal() {
+    
+	return $this->isHttpProtocol();
+    }    
  
     private function obtainScheme() {
         if ($this->path == '') return '';
