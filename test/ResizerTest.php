@@ -19,7 +19,19 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 
     public function testInstantiation() {	
         $this->assertInstanceOf('Resizer', new Resizer(new ImagePath('',new Cache(30)), new Configuration($this->requiredArguments)));
-    }
+    }   
+
+//     public function testTryCatch() {
+//         $ExceptionCatch = false;
+//     
+//         try {
+//             $this->testObtainFilePathErrorNotFile();
+//         } catch (Exception $e) {
+//             $ExceptionCatch = true;
+//         }   
+//         
+//         $this->assertTrue($ExceptionCatch);  
+//     }        
     
     public function testCreateImagePath() {
         $configuration = new Configuration($this->requiredArguments);    
