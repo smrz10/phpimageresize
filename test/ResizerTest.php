@@ -97,42 +97,43 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer = new Resizer($imagePath,$stubConfiguration);                                          
         
         $stub = $this->obtainMockFileCacheIsMoreRecient();    
-        $cache->injectFileSystem($stub);                                               	                                       
+        $cache->injectFileSystem($stub);      
         
-        $this->assertEquals($resizer->doResize(),$imagePath->obtainCacheFilePath($resizer->composeNewPath()));     
+        $this->assertEquals($resizer->doResize(),$imagePath->obtainCacheFilePath($imagePath->composeNewPath($resizer->obtainFilePath(), $stubConfiguration)));     
     }    
     
+    
     private function obtainMockFileExistsTrue() {
-        $stubFileSystem = $this->getMockBuilder('FileSystem')
-            ->getMock();
-        $stubFileSystem->method('file_exists')
-            ->willReturn(true);
-        $stubFileSystem->method('pathinfo')
-            ->willReturn(array(
+	$stubFileSystem = $this->getMockBuilder('FileSystem')
+	    ->getMock();
+	$stubFileSystem->method('file_exists')
+	    ->willReturn(true);
+	$stubFileSystem->method('pathinfo')
+	    ->willReturn(array(
 		'basename' => 'mf.jpg',
 		'extension' => 'jpg'
-            ));            
-            
-        return $stubFileSystem;
+	    ));            
+	    
+	return $stubFileSystem;
     }
-    
-    private function obtainMockFileCacheIsMoreRecient() {
-        $timeNewFile = 20100307;
-        $timeCacheFile = 20100308;
 
-        $stubFileSystem = $this->obtainMockFileExistsTrue();    
-        $stubFileSystem->method('filemtime')
-            ->will($this->onConsecutiveCalls($timeNewFile,$timeNewFile,$timeCacheFile,$timeNewFile));    
-            
-        return $stubFileSystem;            
+    private function obtainMockFileCacheIsMoreRecient() {
+	$timeNewFile = 20100307;
+	$timeCacheFile = 20100308;
+
+	$stubFileSystem = $this->obtainMockFileExistsTrue();    
+	$stubFileSystem->method('filemtime')
+	    ->will($this->onConsecutiveCalls($timeNewFile,$timeNewFile,$timeCacheFile,$timeNewFile));    
+	    
+	return $stubFileSystem;            
     }
-    
+
     private function obtainMockConfiguration($opts) {    
-        $stubConfiguration = $this->getMockBuilder('Configuration')
+	$stubConfiguration = $this->getMockBuilder('Configuration')
 	  ->disableOriginalConstructor()
 	  ->getMock();
 	$stubConfiguration->method('obtainRemote')
-            ->willReturn('./cache/remote/'); 
+	    ->willReturn('./cache/remote/'); 
 	$stubConfiguration->method('obtainConvertPath')
 	    ->willReturn('convert');
 	$stubConfiguration->method('obtainCanvasColor')
@@ -140,10 +141,10 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
 	$stubConfiguration->method('obtainQuality')
 	    ->willReturn(90);
 	$stubConfiguration->method('obtainWidth')
-            ->willReturn($opts['w']);
+	    ->willReturn($opts['w']);
 	$stubConfiguration->method('obtainHeight')
-            ->willReturn($opts['h']);            
-            
-        return $stubConfiguration;
-    }       
+	    ->willReturn($opts['h']);            
+	    
+	return $stubConfiguration;
+    }
 }
