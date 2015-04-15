@@ -5,9 +5,7 @@ require_once 'ImagePath.php';
 require_once 'Configuration.php';
 require_once 'Cache.php';
 
-date_default_timezone_set('Europe/Berlin');
-define('URL_IMAGE_MF', 'http://martinfowler.com/mf.jpg?query=hello&s=fowler');
-define('CACHE_MINUTES', 30);
+require_once '_helpers_test.php';
 
 class ResizerTest extends PHPUnit_Framework_TestCase {
     private $requiredArguments = array('h' => 300, 'w' => 600);      
