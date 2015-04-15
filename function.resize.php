@@ -5,20 +5,20 @@ require 'Configuration.php';
 require 'Resizer.php';
 
 function resize($imagePath,$opts=null){	
-	try {
-	    $configuration = new Configuration($opts);
-	} catch (Exception $e) {
-	    return 'cannot resize the image';
-	}
-	
-	$path = new ImagePath($imagePath);	
-	$resizer = new Resizer($path, $configuration); 
+    try {
+	$configuration = new Configuration($opts);
+    } catch (Exception $e) {
+	return 'cannot resize the image';
+    }
 
-	try {
-		$cacheFilePath = $resizer->doResize();
-	} catch (Exception $e) {
-		return $e->getMessage();
-	}
+    $path = new ImagePath($imagePath);	
+    $resizer = new Resizer($path, $configuration); 
 
-	return $cacheFilePath;	
+    try {
+	    $cacheFilePath = $resizer->doResize();
+    } catch (Exception $e) {
+	    return $e->getMessage();
+    }
+
+    return $cacheFilePath;	
 }
