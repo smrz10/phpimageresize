@@ -51,28 +51,7 @@ class Resizer {
 	    error_log("Tried to execute : $command, return code: $return_code, output: " . print_r($output, true));
 	    throw new RuntimeException('cannot resize the image');
 	}    
-    }        
-
-    public function obtainCommand() {        
-	$cmd = new Command($this->obtainFilePath(), $this->composeNewPath(), $this->configuration);
-	return $cmd->obtainCommand();
-    }       
-    
-    public function defaultShellCommand() {        
-	$cmd = new Command($this->obtainFilePath(), $this->composeNewPath(), $this->configuration);
-	return $cmd->defaultShellCommand();
-    }
-    
-    public function commandWithScale() {		    
-	$cmd = new Command($this->obtainFilePath(), $this->composeNewPath(), $this->configuration);
-	return $cmd->commandWithScale();	
-    }    
-    
-    public function commandWithCrop() {
-	$cmd = new Command($this->obtainFilePath(), $this->composeNewPath(), $this->configuration);
-	return $cmd->commandWithCrop();	
-    }     
-    
+    }          
     
     private function checkPath($path) {
         if (!($path instanceof ImagePath)) throw new InvalidArgumentException();
