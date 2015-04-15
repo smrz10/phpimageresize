@@ -14,21 +14,6 @@ class Resizer {
         $this->path = $path;
         $this->configuration = $configuration;                
     }
-
-    public function obtainFilePath() {
-	
-	return $this->path->obtainFilePath($this->configuration->obtainRemote());
-    } 
-        
-    public function isNecessaryNewFile($newFile,$cacheFile) {	    
-	
-	return $this->path->existsNewPath($newFile, $cacheFile);
-    }
-    
-    public function composeNewPath() {
-	
-	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);   
-    }      
  
     public function doResize() {    	
         $imagePath = $this->obtainFilePath();
@@ -43,6 +28,21 @@ class Resizer {
 	
 	return $this->path->obtainCacheFilePath($newPath);
     }
+    
+    public function obtainFilePath() {
+	
+	return $this->path->obtainFilePath($this->configuration->obtainRemote());
+    } 
+        
+    public function isNecessaryNewFile($newFile,$cacheFile) {	    
+	
+	return $this->path->existsNewPath($newFile, $cacheFile);
+    }      
+    
+    private function composeNewPath() {
+	
+	return $this->path->composeNewPath($this->obtainFilePath(),$this->configuration);   
+    }         
     
     private function exec($command) {
 	$exec = exec($command, $output, $return_code);
