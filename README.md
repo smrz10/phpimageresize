@@ -17,10 +17,10 @@ Notas
 Algo así como ... un diagrama de dependencias entre objetos
 ------
 
-		      Resizer
+              Resizer
 		    
-    Configuration	Command		  ImagePath
+   Configuration  Command        ImagePath
 					
-				    ComposePath	  Cache
+                             ComposePath   Cache
 					
-						    FileSystem
+                                               FileSystem
